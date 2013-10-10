@@ -34,53 +34,53 @@ class Tracker {
     if (video.available()) {
       video.read();
       video.loadPixels();
-      if(display)
+      if (display)
         loadPixels();
       coordinates.clear();
       for (int i = 0; i < video.width * video.height - 1; i++) {
-        if (green(video.pixels[i])>=GREEN_LOWER && green(video.pixels[i])<=GREEN_UPPER
-          && blue(video.pixels[i])>=BLUE_LOWER && blue(video.pixels[i])<=BLUE_UPPER
-          && red(video.pixels[i])>=RED_LOWER && red(video.pixels[i])<=RED_UPPER) {
-          if(display) 
+        if (green(video.pixels[i]) >= GREEN_LOWER && green(video.pixels[i]) <= GREEN_UPPER
+          && blue(video.pixels[i]) >= BLUE_LOWER && blue(video.pixels[i]) <= BLUE_UPPER
+          && red(video.pixels[i]) >= RED_LOWER && red(video.pixels[i]) <= RED_UPPER) {
+          if (display) 
             pixels[i] = highlight;
           coordinates.add(pixelToCoord(i));
         }
-        else if(display)
+        else if (display)
           pixels[i] = video.pixels[i];
       }
     }
-    if(display)  
+    if (display)  
       updatePixels();
   }
   
   public void calibrate() {
-    if(video.available()) {
+    if (video.available()) {
       video.read();
       video.loadPixels();
               
-        RED_UPPER=0;
-        RED_LOWER=255;
-        GREEN_UPPER=0;
-        GREEN_LOWER=255;
-        BLUE_UPPER=0;
-        BLUE_LOWER=255;
+        RED_UPPER = 0;
+        RED_LOWER = 255;
+        GREEN_UPPER = 0;
+        GREEN_LOWER = 255;
+        BLUE_UPPER = 0;
+        BLUE_LOWER = 255;
 
       for (int i = 0; i < video.width * video.height - 1; i++) {
         int r = (int) red(video.pixels[i]);
         int b = (int) blue(video.pixels[i]);
         int g = (int) green(video.pixels[i]);
         
-        if(r>RED_UPPER)
+        if (r > RED_UPPER)
           RED_UPPER = r;
-        if(r<RED_LOWER)
+        if (r < RED_LOWER)
           RED_LOWER = r;
-        if(b>BLUE_UPPER)
+        if (b > BLUE_UPPER)
           BLUE_UPPER = b;
-        if(b<BLUE_LOWER)
+        if (b < BLUE_LOWER)
           BLUE_LOWER = b;
-        if(g>GREEN_UPPER)
+        if (g > GREEN_UPPER)
           GREEN_UPPER = g;
-        if(g<GREEN_LOWER)
+        if (g < GREEN_LOWER)
           GREEN_LOWER = g;
       }
       println("Calibrated");
@@ -116,13 +116,13 @@ class Tracker {
 
   public int[] averagePoints() {
     int[] coords = new int[2];
-    int xSum=0;
-    int ySum=0;
+    int xSum = 0;
+    int ySum = 0;
     for (int i=0; i<coordinates.size(); i++) {
-      xSum+=coordinates.get(i)[0];
-      ySum+=coordinates.get(i)[1];
+      xSum += coordinates.get(i)[0];
+      ySum += coordinates.get(i)[1];
     }
-    if(coordinates.size()>0) {
+    if (coordinates.size()>0) {
       coords[0] = xSum/coordinates.size();
       coords[1] = ySum/coordinates.size();
     }

@@ -1,9 +1,9 @@
-from imgproc import *
+from SimpleCV import *
 
 class Tracker(object):
 	"""Tracks color blobs"""
 	def __init__(self, redLower, redUpper, greenLower, greenUpper, blueLower, blueUpper, width=360, height=240):
-		super(ClassName, self).__init__()
+		super(Tracker, self).__init__()
 		self.redLower = redLower
 		self.redUpper = redUpper
 		self.greenLower = greenLower
@@ -11,24 +11,33 @@ class Tracker(object):
 		self.blueLower = blueLower
 		self.blueUpper = blueUpper
 
-		self.cam = Camera(width, height)
-		self.view = Viewer(width, height, "Color tracking display")
+		self.cam = Camera()
+		self.display = Display((width, height))
 		self.highlight = (255, 204, 0)
+		
+		self.width = width
+		self.height = height
 
 		self.coordinates = []
 
 	def update(self):
-		img = self.cam.grabImage()
-		for x in range(0, img.width):
-			for y in range(0, img.height):
+		coordinates = []
+		img = self.cam.getImage().resize(30, 20)
+		for x in xrange(0, 30):
+			for y in xrange(0, 20):
 				red, green, blue = img[x, y]
 				if(red>self.redLower and red<self.redUpper and 
 						green>self.greenLower and green<self.greenUpper and
 						blue>self.blueLower and blue<self.blueUpper):
 					img[x, y] = self.highlight
+				
 					self.coordinates.append((x,y))
 
-		self.view.displayImage(img)
+		pt = self.averagePoints()
+		
+		img[pt[0], pt[1]] = (255, 0, 0)
+		img.save(self.display)
+		
 
 	def getDistance(self):
 		return len(self.coordinates)

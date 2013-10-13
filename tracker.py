@@ -2,7 +2,7 @@ from SimpleCV import *
 
 class Tracker(object):
 	"""Tracks color blobs"""
-	def __init__(self, redLower, redUpper, greenLower, greenUpper, blueLower, blueUpper, width=360, height=240):
+	def __init__(self, redLower, redUpper, greenLower, greenUpper, blueLower, blueUpper, width=30, height=20):
 		super(Tracker, self).__init__()
 		self.redLower = redLower
 		self.redUpper = redUpper
@@ -12,7 +12,7 @@ class Tracker(object):
 		self.blueUpper = blueUpper
 
 		self.cam = Camera()
-		self.display = Display((width, height))
+		self.display = Display((360, 240))
 		self.highlight = (255, 204, 0)
 		
 		self.width = width
@@ -21,10 +21,10 @@ class Tracker(object):
 		self.coordinates = []
 
 	def update(self):
-		coordinates = []
-		img = self.cam.getImage().resize(30, 20)
-		for x in xrange(0, 30):
-			for y in xrange(0, 20):
+		self.coordinates = []
+		img = self.cam.getImage().resize(self.width, self.height)
+		for x in xrange(0, self.width):
+			for y in xrange(0, self.height):
 				red, green, blue = img[x, y]
 				if(red>self.redLower and red<self.redUpper and 
 						green>self.greenLower and green<self.greenUpper and
@@ -43,10 +43,10 @@ class Tracker(object):
 		return len(self.coordinates)
 
 	def getErrorX(self):
-		return averagePoints()[0] - self.width/2
+		return self.averagePoints()[0] - self.width/2
 
 	def getErrorY(self):
-		return averagePoints()[1] - self.width/2
+		return self.averagePoints()[1] - self.width/2
 
 	def averagePoints(self):
 		xSum = 0
@@ -59,4 +59,4 @@ class Tracker(object):
 		if len(self.coordinates)>0:
 			return (xSum/len(self.coordinates), ySum/len(self.coordinates))
 		else:
-			return (-1, -1)
+			return (self.width/2, self.height/2)
